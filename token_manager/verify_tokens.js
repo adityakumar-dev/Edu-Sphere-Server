@@ -10,14 +10,24 @@ const verifyRefreshTokens = (refreshToken) => {
         }
     });
 }
-const verifyAccessTokens = (refreshToken) => {
-    return jwt.verify(refreshToken, getAccessSecretKey, (err, user) => {
-        if (err) {
-            return 'Invalid Access token';
-        } else {
-            return user;
+function verifyAccessTokens(refreshToken) {
+    try {
+        const user = jwt.verify(refreshToken, getAccessSecretKey, (err, decoded) => {
+            if (err) {
+                return null;
+            }
+            return decoded;
+        });
+        console.log("user is : " + user)
+        if (!user) {
+            return null;
         }
-    });
+
+        return user;
+    } catch (error) {
+        console.error('Error verifying token:', error);
+        return 'Invalid Access token';
+    }
 }
 
 
